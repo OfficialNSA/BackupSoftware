@@ -22,27 +22,25 @@ using System.Linq;
 
 namespace BackupSoftware
 {
-    //Edit the folders in the source code (It is called bad backup, duh)
-    //Strategie: 5 inkrementelle anhand von der ältesten vollständigen, dann die vollständige mit dem ersten inkrementellen vereinigen
 
     class Program
     {
 
         // source
         static string root1 = @"A:\";
-        // The full backup where the increment should be created from
+        // The full backup / original where the increment should be derived from
         static string root2 = @"E:\PC\full_backup\";
         // Destination of the increment
         static string destination = @"E:\PC\" + DateTime.Today.Year.ToString("D4") + "-" + DateTime.Today.Month.ToString("D2") + "-" + DateTime.Today.Day.ToString("D2") + @"\";
 
-        // What shouldn't be included (I don't know if it works, probably not)
+        // What shouldn't be included
         static string[] ignorables = { ".git", "node_modules", "build" };
 
         static void Main(string[] args)
         {
 
             // License and warranty hint in the running program
-            Console.WriteLine("Financial Analysis  Copyright (C) 2022  Josua Gunzenhauser\nThis program comes with ABSOLUTELY NO WARRANTY; for details see the COPYING file or <https://www.gnu.org/licenses/>\nThis is free software, and you are welcome to redistribute it under certain conditions; see the COPYING file or <https://www.gnu.org/licenses/> for details.");
+            Console.WriteLine("BackupSoftware  Copyright (C) 2022  Josua Gunzenhauser\nThis program comes with ABSOLUTELY NO WARRANTY; for details see the COPYING file or <https://www.gnu.org/licenses/>\nThis is free software, and you are welcome to redistribute it under certain conditions; see the COPYING file or <https://www.gnu.org/licenses/> for details.");
             Console.WriteLine("\n\nTHIS SOFTWARE IS ABLE TO BREAK AND WILL BREAK YOUR COMPUTER IF YOU DON'T USE IT WITH CARE.");
 
 
@@ -91,6 +89,7 @@ namespace BackupSoftware
 
         }
 
+        // Get recursive difference between folders, stop if no child folders or the path contains an ignorable
         static List<string> getDifferenceBetweenFolders(string relativePath)
         {
 
@@ -123,6 +122,7 @@ namespace BackupSoftware
                     foreach (var item in v.GetFiles("*.*", SearchOption.AllDirectories))
                     {
                         bool ignored = false;
+                        //TODO: Triple foreach, probably bad performance
                         foreach (string ignore in ignorables)
                         {
                             if (item.FullName.Contains(ignore))
